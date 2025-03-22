@@ -15,8 +15,6 @@ class HttpClient {
       (response) => {
         if (response.data) {
           const { token } = response.data;
-          console.log("response", response);
-          
           if (token) {
             // Guardar el token en localStorage
             localStorage.setItem("token", token);
@@ -74,6 +72,17 @@ class HttpClient {
     config?: AxiosRequestConfig
   ): Promise<AxiosResponse<T>> {
     return this.instance.put<T>(url, data, {
+      ...config,
+      headers: { ...config?.headers },
+    });
+  }
+
+  async patch<T>(
+    url: string,
+    data: unknown,
+    config?: AxiosRequestConfig
+  ): Promise<AxiosResponse<T>> {
+    return this.instance.patch<T>(url, data, {
       ...config,
       headers: { ...config?.headers },
     });

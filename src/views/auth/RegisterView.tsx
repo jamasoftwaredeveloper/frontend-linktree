@@ -1,13 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import type { RegisterForm } from "../../types/TUser";
 import ErrorMessage from "../../components/ErrorMessage";
-import { useAuth } from "../../services/auth/useAuth";
+import { AuthService } from "../../services/auth/AuthService";
 
 
 
 export default function RegisterView() {
-    const { register: registerUser } = useAuth();
+    const navigate = useNavigate();
+    const { register: registerUser } = AuthService();
     const initialValues = {
         name: '',
         handle: '',
@@ -22,6 +23,7 @@ export default function RegisterView() {
 
         await registerUser(formData);
         reset()
+        navigate("/admin/profile");
     }
 
     return (

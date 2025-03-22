@@ -2,6 +2,7 @@ export type User = {
   handle: string;
   name: string;
   email: string;
+  description: string;
 };
 
 export type ResponseUser = {
@@ -22,3 +23,5 @@ export type RegisterResponse = {
   message: string;
   code: number;
 };
+
+export type ProfileForm = Pick<User, 'handle' | 'description' | 'email'>;

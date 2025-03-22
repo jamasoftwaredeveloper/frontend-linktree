@@ -2,20 +2,22 @@ import { Link } from "react-router-dom";
 import { useForm } from 'react-hook-form'
 import { LoginForm } from "../../types/TUser";
 import ErrorMessage from "../../components/ErrorMessage";
-import { useAuth } from "../../services/auth/useAuth";
-
+import { AuthService } from "../../services/auth/AuthService";
+import { useNavigate } from "react-router-dom";
 
 
 export default function LoginView() {
-    const { login } = useAuth();
+    const navigate = useNavigate();
+    const { login } = AuthService();
     const defaultValues = {
         email: '',
         password: ''
     };
     const { register, handleSubmit, reset, formState: { errors } } = useForm<LoginForm>({ defaultValues });
-    async function handleLogin (data: LoginForm ) {
-       await login(data);
-       reset();
+    async function handleLogin(data: LoginForm) {
+        await login(data);
+        reset();
+        navigate("/admin/profile");
     }
 
     return (

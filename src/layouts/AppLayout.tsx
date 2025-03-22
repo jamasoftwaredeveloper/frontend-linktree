@@ -1,19 +1,11 @@
-import { Link, Navigate, Outlet } from "react-router-dom";
-import { Toaster } from "sonner";
-import NavigationTabs from "../components/NavigationTabs";
-import { useQuery } from "@tanstack/react-query";
-import { getUser } from "../api/DevTreeAPI";
+import { Navigate } from "react-router-dom";
+
 import Header from "../components/Header";
+import { useUserAuthQuery } from "../hooks/Queries/useAuthQuery";
 
 export default function AppLayout() {
+    const { data, isLoading, isError } = useUserAuthQuery();
 
-    const { data, isLoading, isError } = useQuery({
-        queryFn: getUser,
-        queryKey: ['getUser'],
-        retry: 1,
-        refetchOnWindowFocus: true
-
-    });
 
     if (isLoading) {
         return "Cargando...";
@@ -22,5 +14,5 @@ export default function AppLayout() {
         return <Navigate to={'/auth/login'} />
     }
 
-    if (data) return <Header data={data}/>
+    if (data) return <Header data={data} />
 }
