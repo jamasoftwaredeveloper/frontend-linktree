@@ -4,6 +4,11 @@ export type User = {
   email: string;
 };
 
+export type ResponseUser = {
+  user: User;
+  message: string;
+};
+
 export type LoginForm = Pick<User, "email"> & {
   password: string;
 };

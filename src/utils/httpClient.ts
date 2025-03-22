@@ -1,10 +1,4 @@
-import axios, {
-  AxiosInstance,
-  AxiosRequestConfig,
-  AxiosResponse,
-  isAxiosError,
-} from "axios";
-import { toast } from "sonner";
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 
 class HttpClient {
   private instance: AxiosInstance;
@@ -19,24 +13,35 @@ class HttpClient {
 
     this.instance.interceptors.response.use(
       (response) => {
-        if (isAxiosError(response) && response.response) {
-          toast.success(response.response.data.message);
-        }
-
         if (response.data) {
-          const { message, token } = response.data;
-          toast.success(message);
-          localStorage.setItem("token", token);
+          const { token } = response.data;
+          console.log("response", response);
+          
+          if (token) {
+            // Guardar el token en localStorage
+            localStorage.setItem("token", token);
+          }
         }
-        console.log("response 1", response.data);
 
-        return Promise.reject(response);
+        return response; // Devolver la respuesta sin modificarla
       },
       (error) => {
-        if (isAxiosError(error) && error.response) {
-          toast.error(error.response.data.message);
+        return Promise.reject(error);
+      }
+    );
+
+    // 🚀 Interceptor para incluir el token en todas las solicitudes
+    this.instance.interceptors.request.use(
+      (config) => {
+        const token = localStorage.getItem("token");
+
+        if (token && config.headers) {
+          config.headers.set("Authorization", `Bearer ${token}`);
         }
-        console.log("error", error);
+
+        return config;
+      },
+      (error) => {
         return Promise.reject(error);
       }
     );
@@ -46,9 +51,10 @@ class HttpClient {
     url: string,
     config?: AxiosRequestConfig
   ): Promise<AxiosResponse<T>> {
-    const token = localStorage.getItem("token");
-    const headers = token ? { Authorization: `Bearer ${token}` } : {};
-    return this.instance.get<T>(url, { ...config, headers: { ...config?.headers, ...headers } });
+    return this.instance.get<T>(url, {
+      ...config,
+      headers: { ...config?.headers },
+    });
   }
 
   async post<T>(
@@ -56,10 +62,10 @@ class HttpClient {
     data: unknown,
     config?: AxiosRequestConfig
   ): Promise<AxiosResponse<T>> {
-    const isAuthRoute = url.includes("register") || url.includes("login");
-    const token = !isAuthRoute ? localStorage.getItem("token") : null;
-    const headers = token ? { Authorization: `Bearer ${token}` } : {};
-    return this.instance.post<T>(url, data, { ...config, headers: { ...config?.headers, ...headers } });
+    return this.instance.post<T>(url, data, {
+      ...config,
+      headers: { ...config?.headers },
+    });
   }
 
   async put<T>(
@@ -67,18 +73,20 @@ class HttpClient {
     data: unknown,
     config?: AxiosRequestConfig
   ): Promise<AxiosResponse<T>> {
-    const token = localStorage.getItem("token");
-    const headers = token ? { Authorization: `Bearer ${token}` } : {};
-    return this.instance.put<T>(url, data, { ...config, headers: { ...config?.headers, ...headers } });
+    return this.instance.put<T>(url, data, {
+      ...config,
+      headers: { ...config?.headers },
+    });
   }
 
   async delete<T>(
     url: string,
     config?: AxiosRequestConfig
   ): Promise<AxiosResponse<T>> {
-    const token = localStorage.getItem("token");
-    const headers = token ? { Authorization: `Bearer ${token}` } : {};
-    return this.instance.delete<T>(url, { ...config, headers: { ...config?.headers, ...headers } });
+    return this.instance.delete<T>(url, {
+      ...config,
+      headers: { ...config?.headers },
+    });
   }
 }
 

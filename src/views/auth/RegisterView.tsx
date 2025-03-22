@@ -2,11 +2,12 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import type { RegisterForm } from "../../types/TUser";
 import ErrorMessage from "../../components/ErrorMessage";
-import { register as registerUser } from "../../services/auth/authService";
+import { useAuth } from "../../services/auth/useAuth";
+
 
 
 export default function RegisterView() {
-
+    const { register: registerUser } = useAuth();
     const initialValues = {
         name: '',
         handle: '',

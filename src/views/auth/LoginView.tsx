@@ -2,11 +2,12 @@ import { Link } from "react-router-dom";
 import { useForm } from 'react-hook-form'
 import { LoginForm } from "../../types/TUser";
 import ErrorMessage from "../../components/ErrorMessage";
-import { login } from "../../services/auth/authService";
+import { useAuth } from "../../services/auth/useAuth";
+
 
 
 export default function LoginView() {
-
+    const { login } = useAuth();
     const defaultValues = {
         email: '',
         password: ''
