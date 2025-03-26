@@ -60,9 +60,13 @@ class HttpClient {
     data: unknown,
     config?: AxiosRequestConfig
   ): Promise<AxiosResponse<T>> {
+    const isFormData = data instanceof FormData;
     return this.instance.post<T>(url, data, {
       ...config,
-      headers: { ...config?.headers },
+      headers: {
+        "Content-Type": isFormData ? "multipart/form-data" : "application/json",
+        ...config?.headers,
+      },
     });
   }
 

@@ -11,9 +11,9 @@ import { toast } from "sonner";
 export const AuthService = () => {
   const login = async (credentials: LoginForm) => {
     try {
+
       const result = await httpClient.post("/auth/login", credentials);
       console.log("result login", result);
-      
     } catch (error) {
       if (isAxiosError(error) && error.response) {
         toast.error(error.response.data.message);
@@ -60,5 +60,28 @@ export const AuthService = () => {
       throw error; // ✅ IMPORTANTE: Lanza el error para que React Query lo detecte
     }
   };
-  return { login, register, getUser, updateUser };
+
+  const uploadProfileImagen = async (file: File) => {
+    try {
+
+      const formData = new FormData();
+      formData.append("file", file);
+      console.log("hoka enteo",formData);
+
+      const { data } = await httpClient.post(
+        "/auth/uploadImageUser/image",
+        formData
+      );
+      console.log("data",data);
+      //toast.success(data.message);
+      //return data.user; // ✅ Devuelve el usuario actualizado correctamente
+    } catch (error) {
+      if (isAxiosError(error) && error.response) {
+        toast.error(error.response.data.message);
+      }
+      console.log("error",error);
+      throw error; // ✅ IMPORTANTE: Lanza el error para que React Query lo detecte
+    }
+  };
+  return { login, register, getUser, updateUser, uploadProfileImagen };
 };

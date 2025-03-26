@@ -4,10 +4,13 @@ import ErrorMessage from "../components/ErrorMessage";
 import { useQueryClient } from "@tanstack/react-query";
 import { ProfileForm, User } from "../types/TUser";
 import { useUserAuthMutation } from "../hooks/Mutations/useAuthUserMutation";
+import { useProfileImagenMutation } from "../hooks/Mutations/useProfileImagenMutation";
+import React from "react";
 
 
 export default function ProfileView() {
-    const { mutate:updataUser } = useUserAuthMutation();
+    const { mutate: updateUser } = useUserAuthMutation();
+    const { mutate: uploadUser } = useProfileImagenMutation();
     const queryClient = useQueryClient();
     const data: User = queryClient.getQueryData(['getUser'])!;
 
@@ -21,7 +24,15 @@ export default function ProfileView() {
         defaultValues
     });
     async function handleUserProfileForm(data: ProfileForm) {
-        updataUser(data);
+        updateUser(data);
+    }
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {          
+            uploadUser(e.target.files[0]);
+        }
+
+        // uploadUser(data);
     }
     return (
         <form
@@ -64,10 +75,10 @@ export default function ProfileView() {
                 <input
                     id="image"
                     type="file"
-                    name="handle"
+                    name="file"
                     className="border-none bg-slate-100 rounded-lg p-2"
                     accept="image/*"
-                    onChange={() => { }}
+                    onChange={handleChange}
                 />
             </div>
 

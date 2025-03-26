@@ -3,6 +3,7 @@ export type User = {
   name: string;
   email: string;
   description: string;
+  image: string;
 };
 
 export type ResponseUser = {
@@ -24,4 +25,8 @@ export type RegisterResponse = {
   code: number;
 };
 
-export type ProfileForm = Pick<User, 'handle' | 'description' | 'email'>;
+export type ProfileForm = Pick<User, "handle" | "description" | "email">;
+
+export type ProfileImagen = {
+  imagen: File;
+};
